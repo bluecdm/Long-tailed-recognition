@@ -29,15 +29,15 @@ Python code for ICML 2023 paper entitled "Long-Tailed Recognition by Mutual Info
 
 #### Long-tailed Recognition Accuracy:
 
-Dataset | Epochs | Top-1 Acc(%)
----- | :----: | :----: 
-ImageNet-LT | 90 | 58.3
-ImageNet-LT | 400 | 58.8
-iNaturalist 2018 | 100 | 73.1
-iNaturalist 2018 | 400 | 74.5
-CIFAR-100-LT (imb. 100) | 200 | 53.0
-CIFAR-100-LT (imb. 50) | 200 | 57.6
-CIFAR-100-LT (imb. 10) | 200 | 65.7
-CIFAR-100-LT (imb. 100) | 400 | 54.0
-CIFAR-100-LT (imb. 50) | 400 | 58.1
-CIFAR-100-LT (imb. 10) | 400 | 67.0
+Dataset | Backbone | Epochs | Top-1 Acc(%)
+---- | :----: | :----: | :----: 
+ImageNet-LT | ResNeXt-50 |  90 | 58.3
+ImageNet-LT | ResNeXt-50 |400 | 58.8
+iNaturalist 2018 | ResNet-50 | 100 | 73.1
+iNaturalist 2018 | ResNet-50 | 400 | 74.5
+CIFAR-100-LT (imb. 100) | ResNet-32 | 200 | 53.0
+CIFAR-100-LT (imb. 50) | ResNet-32 | 200 | 57.6
+CIFAR-100-LT (imb. 10) | ResNet-32 | 200 | 65.7
+CIFAR-100-LT (imb. 100) | ResNet-32 | 400 | 54.0
+CIFAR-100-LT (imb. 50) | ResNet-32 | 400 | 58.1
+CIFAR-100-LT (imb. 10) | ResNet-32 | 400 | 67.0
