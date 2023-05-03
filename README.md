@@ -27,7 +27,7 @@ Python code for ICML 2023 paper entitled "Long-Tailed Recognition by Mutual Info
 3. (Train student) Run bash ./sh/ImageNetLT_train_student.sh
 
 
-#### Long-tailed Recognition Accuracy:
+#### Long-tailed recognition accuracy:
 
 Dataset | Backbone | Epochs | Top-1 Acc(%)
 ---- | :----: | :----: | :----: 
