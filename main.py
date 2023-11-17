@@ -477,9 +477,9 @@ def train(train_loader, model, criterion, optimizer, epoch, tb_logger, args):
             in_idx = in_idx.cuda(args.gpu, non_blocking=True)
 
         # compute output
-        query, key, k_labels, k_idx, logits \
+        query, key, k_labels, k_idx, logits, t_logits \
             = model(*images, target, in_idx)
-        loss = criterion(query, target, in_idx, key, k_labels, k_idx, logits)
+        loss = criterion(query, target, in_idx, key, k_labels, k_idx, logits, t_logits)
         
         acc1, acc5 = accuracy(logits, target, topk=(1, 5))
         losses.update(loss.item(), logits.size(0))

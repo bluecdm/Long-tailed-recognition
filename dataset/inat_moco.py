@@ -43,7 +43,6 @@ class INaturalist_moco(Dataset):
             img = Image.open(f).convert('RGB')
         
         if self.transform is not None:
-            sample1 = self.transform[0](img)
-            sample2 = self.transform[1](img)
+            samples = [tr(img) for tr in self.transform]
 
-        return [sample1, sample2], label 
+        return samples, label, np.array(index)

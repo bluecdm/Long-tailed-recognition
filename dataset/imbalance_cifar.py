@@ -75,7 +75,7 @@ class ImbalanceCIFAR10(torchvision.datasets.CIFAR10):
         if self.target_transform is not None:
             target = self.target_transform(target)
 
-        return samples, target, index
+        return samples, target, np.array(index)
 
 
 class ImbalanceCIFAR100(ImbalanceCIFAR10):

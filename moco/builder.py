@@ -249,7 +249,9 @@ class MoCo(nn.Module):
             self._momentum_update_key_encoder()  # update the key encoder
             im_k, labels, idx_unshuffle = self._batch_shuffle_ddp(im_k, labels)
             
-        _, feat_k = self.encoder_k(im_k)
+        logit_k, feat_k = self.encoder_k(torch.cat([im_cls, im_k]))
+        logit_k = logit_k[:bs]
+        feat_k = feat_k[bs:]
         embed_k = F.normalize(self.embed_k(feat_k), dim=1)
         
         if not self.distill:
@@ -265,7 +267,7 @@ class MoCo(nn.Module):
         k_idx = self.queue_i.clone().detach()
         
         
-        return query, key, k_labels, k_idx, logit_q
+        return query, key, k_labels, k_idx, logit_q, logit_k
 
     def _inference(self, image):
         logit_q, _ = self.encoder_q(image)

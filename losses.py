@@ -4,9 +4,23 @@ import torch.nn.functional as F
 import numpy as np
 
 
+
+
+class DistillKL(nn.Module):
+    """Distilling the Knowledge in a Neural Network"""
+    def __init__(self, T):
+        super(DistillKL, self).__init__()
+        self.T = T
+
+    def forward(self, y_s, y_t):
+        p_s = F.log_softmax(y_s/self.T, dim=1)
+        p_t = F.softmax(y_t/self.T, dim=1)
+        loss = F.kl_div(p_s, p_t, size_average=False) * (self.T**2) / y_s.shape[0]
+        return loss
+
     
 class GMLLoss(nn.Module):
-    def __init__(self, beta, gamma, temperature=1.0, num_classes=1000):
+    def __init__(self, beta, gamma, temperature=1.0, num_classes=1000, alpha=0.0):
         super().__init__()
         T_base = 1 / 30
         self.register_parameter(
@@ -21,11 +35,13 @@ class GMLLoss(nn.Module):
             'log_T_s__no_wd__',
             torch.full([1], T_base).log(),
         )
+        self.alpha = alpha
         self.beta = beta
         self.gamma = gamma
         self.num_classes = num_classes
         
         self.criterion = nn.CrossEntropyLoss()
+        self.criterion_kd = DistillKL(T=4)
             
         
     @property
@@ -55,7 +71,7 @@ class GMLLoss(nn.Module):
         
         return logmeanexp_logits_per_cls
         
-    def forward(self, query, q_labels, q_idx, key, k_labels, k_idx, sup_logits):
+    def forward(self, query, q_labels, q_idx, key, k_labels, k_idx, sup_logits, t_logits=None):
         device = (torch.device('cuda')
                   if query.is_cuda
                   else torch.device('cpu'))
@@ -74,10 +90,16 @@ class GMLLoss(nn.Module):
                                + self.cls_weight.log(), q_labels)
         loss_con_T = self.criterion(logS_x_y_T
                                + self.cls_weight.log(), q_labels)
+        if t_logits is None:
+            loss_div = 0
+        else:
+            loss_div = self.criterion_kd(sup_logits / self.T_s, t_logits / self.T_s)
         
         
         loss = self.gamma * loss_sup
         if self.beta > 0:
             loss += self.beta * (loss_con + loss_con_T)
+        if self.alpha > 0:
+            loss += self.alpha * loss_div
         
         return loss
